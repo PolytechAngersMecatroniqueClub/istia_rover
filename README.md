@@ -14,7 +14,8 @@ the rover is based on:
 This package contains specifics nodes to run the rover dans the sensors, the source code of the nodes are in the src folder
 
 ## motor_hat_twist_node.cpp
-This node allows to
+This node allows to convert a twist message to pwm commands for the motors. It is based on the motor_hat_node from matpalm (https://github.com/matpalm/ros-motorhat-node)
+
 
 
 ## tsl2561_node.cpp
