@@ -4,6 +4,8 @@ from sensor_msgs.msg import Range
 from geometry_msgs.msg import Twist
 from evdev import InputDevice, categorize, ecodes, ff, list_devices
 import sys as sys
+import os as os
+import time as time
 
 DEFAULT_DEVADD = "b8:27:eb:7a:9c:dc"
 DEFAULT_DEVNAME = "Wireless Controller"
@@ -76,9 +78,17 @@ repeat_count = 1
 effect_id = gamepad.upload_effect(effect)
 gamepad.write(ecodes.EV_FF, effect_id, repeat_count)
 
+flat_rosbag_started = False
+
 for event in gamepad.read_loop():
     #filters by event type
     if event.type == ecodes.EV_KEY:
+        if (event.code == 305) and (event.val == 1): # The round key has been pressed
+            gamepad.write(ecodes.EV_FF, effect_id, repeat_count)
+            current_time = time.strftime("%y-%m-%d_%H-%M-%S")
+            os.system('tmux send-keys -t \'rosbag\' \'' + current_time + '.bag\' ')
+            print("ROSBAG started")
+
         rospy.loginfo(event)
     elif  event.type == ecodes.EV_ABS:
         flagupdate = False

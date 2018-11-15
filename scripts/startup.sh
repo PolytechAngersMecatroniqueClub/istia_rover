@@ -10,7 +10,7 @@ LOG_MOTORHAT=/home/pi/logs/tmux_motorhat.log
 LOG_LIDAR=/home/pi/logs/tmux_lidar.log
 LOG_TSL2561=/home/pi/logs/tmux_tsl2561.log
 LOG_TFBROADCASTER=/home/pi/logs/tmux_tfbroadcaster.log
-
+LOG_ROSBAG=/home/pi/logs/tmux_rosbag.log
 
 # if the startup.log file already exists, we make a backup just in case
 # this is done in order not to overwrite the last logs when the raspberry pi reboots
@@ -211,5 +211,25 @@ tmux pipe-pane -t tfbroadcaster "tee -a '$LOG_TFBROADCASTER'"
 tmux send-keys -t 'tfbroadcaster' 'roslaunch istia_rover static_tf2_broadcast.launch'  C-m
 tmux send-keys -t 'tfbroadcaster' 'roslaunch istia_rover static_tf2_broadcast.launch'  C-m
 
+
+# --- creation of the rosbag tmux window ---
+# check the previous comments for explanation
+
+if [ -f $LOG_ROSBAG ]
+then
+    mv $LOG_ROSBAG $LOG_ROSBAG.back
+fi
+
+echo "tmux_rosbag.log file" > $LOG_ROSBAG
+date +"%Y %m %d %H %M %S" >> $LOG_ROSBAG
+
+echo "starting the rosbag tmux window" | tee -a $LOG_STARTUP
+
+# we get the current time into a variable for the name of the rosbag
+NOW=`date '+%F_%H-%M-%S'`
+
+tmux new-window -d -a -n 'rosbag' -t ros 2>&1 | tee -a $LOG_STARTUP
+tmux pipe-pane -t rosbag "tee -a '$LOG_ROSBAG'"
+tmux send-keys -t 'rosbag' "rosbag record -O /media/pi/D090-C900/$NOW.bag -a"  C-m
 
 exit 0
