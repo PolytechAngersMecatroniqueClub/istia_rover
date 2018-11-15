@@ -1,10 +1,5 @@
 <launch>
 
-<!-- A simple launch file for the urg_node package. -->
-
-<!--  When using an IP-connected LIDAR, populate the "ip_address" parameter with the address of the LIDAR.
-      Otherwise, leave it blank. If supported by your LIDAR, you may enable the publish_intensity
-      and/or publish_multiecho options. -->
 
     <node name="motor_hat_twist_node" pkg="istia_rover" type="motor_hat_twist_node" output="screen">
         <param name="motor_bot_left" value="0"/>
