@@ -32,7 +32,7 @@ This node is based on the motor_hat_node from matpalm (https://github.com/matpal
 This node convert the input of a dual shock playstation controller to a twist message that can be used by the motor_hat_twist_node. Assuming that the controller is connected (using bluetooth network), this node send a twist message named /wireless_controller/cmd_vel.
 Note that for now the physicall address of the controller is hard-written in the code and you may want to change that...
 
-## The launch files
+## The launch files 
 
 
 # The script folder
