@@ -1,5 +1,5 @@
 # istia_rover
-This repository contains
+This repository contains the ROS nodes used on the rover and some usefull scripts an explaination
 
 # the material parts of the rover
 the rover is based on:
@@ -9,5 +9,19 @@ the rover is based on:
  - two alimentations boards UNI-REG (https://www.lextronic.fr/conversion-tension/29859-module-alimentation-1-8-2-7-3-3-4-5-12vcc.html)
  - a LiDAR hokuyo utm-30lx (with an home made power board for power supply the sensor)
  - a TSL2561 lux sensor from adafruit (https://www.adafruit.com/product/439)
+
+# The ROS istia_rover package
+This package contains specifics nodes to run the rover dans the sensors, the source code of the nodes are in the src folder
+
+## motor_hat_twist_node.cpp
+This node allows to
+
+
+## tsl2561_node.cpp
+
+## wireless_controller.py
+
+## The launch files
+
 
 
