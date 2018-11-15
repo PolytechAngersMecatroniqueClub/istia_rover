@@ -38,6 +38,8 @@ This node converts the input of a dual shock playstation controller to a twist m
 
 Note that for now the physical address of the controller is hard-written in the code and you may want to change that...
 
+Note that is uses evdev library to handle the bluetooth controller.
+
 ## The launch files 
 In the istia_rover/launch folder there are several launch files.
 
@@ -79,5 +81,37 @@ The startup.sh file is commented for further explanation. Note that it starts:
 
 ## listener.py
 This python script wait for the pad controller to be connected. Once it is connected, it starts the wireless_controller ros node and the motor_hat_twist_node using the wireless_controller.launch file.
+
+Note that is uses evdev library to handle the bluetooth controller.
+
 # Tmux memo
+Those are the commands most often used when dealing with the istia rover
+
+### from a classic terminal (not tmux)
+kill tmux session:
+```shell
+tmux kill-session -t session_name
+```
+list tmux session:
+```shell
+tmux ls
+```
+attach tmux session:
+```shell
+tmux a -t session_name
+```
+
+### from tmux terminal
+detach tmux session:
+```shell
+ctrl+b d
+```
+next window:
+```shell
+ctrl+b n
+```
+kill window:
+```shell
+exit
+```
 
