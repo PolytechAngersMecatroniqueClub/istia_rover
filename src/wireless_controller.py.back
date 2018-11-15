@@ -4,8 +4,6 @@ from sensor_msgs.msg import Range
 from geometry_msgs.msg import Twist
 from evdev import InputDevice, categorize, ecodes, ff, list_devices
 import sys as sys
-import os as os
-import time as time
 
 DEFAULT_DEVADD = "b8:27:eb:7a:9c:dc"
 DEFAULT_DEVNAME = "Wireless Controller"
@@ -35,11 +33,11 @@ gamepad = None
 # we loop over those devices looking for the wireless controller
 for device in devices:
     if (device.phys == devadd) and (device.name == devname) :
-        rospy.loginfo("<"+str(devname)+"> is connected to <"+str(device.path)+">")
+        print("<"+str(devname)+"> is connected to <"+str(device.path)+">")
         gamepad = device
 
 if gamepad == None: # this means the controller was not found, the programm has to stop
-    rospy.logerror("<"+str(devname)+"> not found")
+    print("<"+str(devname)+"> not found")
     exit()
 
 cmd_pub = rospy.Publisher('/wireless_controller/cmd_vel',
@@ -58,14 +56,14 @@ x = 0
 z = 0
 x_old = 0
 z_old = 0
+#evdev takes care of polling the controller in a loop
 
-# evdev takes care of polling the controller in a loop
-# print(gamepad.capabilities(verbose=True)
+print(gamepad.capabilities(verbose=True))
+
 # to make the pad rumbled:
-
 rumble = ff.Rumble(strong_magnitude=0x0000, weak_magnitude=0xffff)
 effect_type = ff.EffectType(ff_rumble_effect=rumble)
-duration_ms=500
+duration_ms=1000
 
 effect = ff.Effect(
     ecodes.FF_RUMBLE, -1, 0,
@@ -74,33 +72,14 @@ effect = ff.Effect(
     ff.EffectType(ff_rumble_effect=rumble)
 )
 
-repeat_count = 2
+repeat_count = 1
 effect_id = gamepad.upload_effect(effect)
 gamepad.write(ecodes.EV_FF, effect_id, repeat_count)
-# time.sleep(2)
-# gamepad.erase_effect(effect_id)
-
-flag_rosbag_started = False
 
 for event in gamepad.read_loop():
     #filters by event type
     if event.type == ecodes.EV_KEY:
-        # print(event)
-        if (event.code == 305) and (event.value == 1): # The round key has been pressed
-            if flag_rosbag_started:
-                rospy.logwarn("Rosbag already running, you need to stop it before starting a new one")
-            else:
-                # repeat_count = 1
-                # effect_id = gamepad.upload_effect(effect)
-                # gamepad.write(ecodes.EV_FF, effect_id, repeat_count)
-                current_time = time.strftime("%y-%m-%d_%H-%M-%S")
-                os.system('tmux send-keys -t \'rosbag\' \'rosbag record -O /media/pi/D090-C900/' + current_time + '.bag -a\' C-m')
-                rospy.loginfo("ROSBAG started")
-                flag_rosbag_started = True
-        elif (event.code == 304) and (event.value == 1): # The cross key has been pressed
-                os.system('tmux send-keys -t \'rosbag\'  C-c')
-                rospy.loginfo('ROSBAG stopped')
-                flag_rosbag_started = False
+        rospy.loginfo(event)
     elif  event.type == ecodes.EV_ABS:
         flagupdate = False
         if(event.code == 0):

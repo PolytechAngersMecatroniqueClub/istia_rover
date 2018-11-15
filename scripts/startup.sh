@@ -230,6 +230,6 @@ NOW=`date '+%F_%H-%M-%S'`
 
 tmux new-window -d -a -n 'rosbag' -t ros 2>&1 | tee -a $LOG_STARTUP
 tmux pipe-pane -t rosbag "tee -a '$LOG_ROSBAG'"
-tmux send-keys -t 'rosbag' "rosbag record -O /media/pi/D090-C900/$NOW.bag -a"  C-m
+tmux send-keys -t 'rosbag' 'echo "waiting for a rosbag to start..."'  C-m
 
 exit 0
