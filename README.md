@@ -102,7 +102,7 @@ tmux a -t session_name
 ```
 
 ### from tmux terminal
-detach tmux session:
+detach from tmux session (get back to classic terminal):
 ```shell
 ctrl+b d
 ```
@@ -110,7 +110,7 @@ next window:
 ```shell
 ctrl+b n
 ```
-kill window:
+kill current window:
 ```shell
 exit
 ```

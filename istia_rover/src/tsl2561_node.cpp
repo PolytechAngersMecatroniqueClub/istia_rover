@@ -8,7 +8,7 @@
 using namespace std;
 
 // ------------------------------
-// HAT control registers and data
+// Sensor control registers and data
 
 const int I2C_ADDR = 0x39;
 

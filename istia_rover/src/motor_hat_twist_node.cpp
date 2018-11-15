@@ -1,3 +1,7 @@
+/*
+This file is the source code of the motor_hat_twist_node. Is is based on the motor_hat_twist_node file 
+from matpalm (https://github.com/matpalm/ros-motorhat-node).
+*/
 #include <ros/ros.h>
 #include <ros/console.h>
 #include <geometry_msgs/Twist.h>
@@ -154,7 +158,7 @@ void turnOffMotors() {
         stop(i);
 }
 
-// Receive a vector4 of int corresponding to the desired motor speeds.
+// Receive a twist message corresponding to the desired motor speeds.
 void cmdCallback(const geometry_msgs::Twist::ConstPtr& msg) {
     float x = msg->linear.x;    // linear speed
     float z = msg->angular.z;   // angular speed (rotation)

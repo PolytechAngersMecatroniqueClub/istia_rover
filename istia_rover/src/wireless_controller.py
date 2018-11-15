@@ -76,10 +76,6 @@ repeat_count = 1
 effect_id = gamepad.upload_effect(effect)
 gamepad.write(ecodes.EV_FF, effect_id, repeat_count)
 
-# gamepad.erase_effect(effect_id)
-
-# END
-
 for event in gamepad.read_loop():
     #filters by event type
     if event.type == ecodes.EV_KEY:
