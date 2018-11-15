@@ -1,0 +1,17 @@
+kill tmux session:
+$ tmux kill-session -t sessionname
+
+list tmux sessions:
+$ tmux ls
+
+attach tmux session:
+$ tmux a -t sessionname
+
+detach from tmux (when attached to a session)
+$ ctrl+b d
+
+next window (when attached to a session)
+$ ctrl+b n
+
+
+

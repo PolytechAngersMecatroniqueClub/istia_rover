@@ -1,0 +1,6 @@
+<launch>
+
+    <node name="link_tsl2561_broadcaster" pkg="tf2_ros" type="static_transform_publisher" args="0 0 0 0 0 0 base_link tsl2561_link" />
+    <node name="link_laser_broadcaster" pkg="tf2_ros" type="static_transform_publisher" args="0 0 0 0 0 0 base_link laser" />
+
+</launch>
