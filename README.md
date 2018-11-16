@@ -9,6 +9,7 @@ The istia rover is based on:
  - two alimentations boards UNI-REG (https://www.lextronic.fr/conversion-tension/29859-module-alimentation-1-8-2-7-3-3-4-5-12vcc.html) - One for the motors hat shield (12v) and one for the raspberry (5v)
  - a LiDAR hokuyo utm-30lx (with an home made power board for power supply the sensor)
  - a TSL2561 lux sensor from adafruit (https://www.adafruit.com/product/439)
+ - an Adafruit Pi Plate (16x2 Character LCD + Keypad) (https://learn.adafruit.com/adafruit-16x2-character-lcd-plus-keypad-for-raspberry-pi/overview)
 
 # The ROS istia_rover package
 This package contains specifics nodes to run the rover and the sensors. Note that the source code of the nodes are in the istia_rover/src folder. Note that it has been tested for ros-kinetic
@@ -83,6 +84,9 @@ The startup.sh file is commented for further explanation. Note that it starts:
 This python script wait for the pad controller to be connected. Once it is connected, it starts the wireless_controller ros node and the motor_hat_twist_node using the wireless_controller.launch file.
 
 Note that is uses evdev library to handle the bluetooth controller.
+
+## TODO
+Information about the other scripts
 
 # Tmux memo
 Those are the commands most often used when dealing with the istia rover
