@@ -13,6 +13,7 @@ devname = DEFAULT_DEVNAME
 devadd = DEFAULT_DEVADD
 
 os.system('echo "looking for the wireless controller"')
+os.system('/home/pi/bin/ihm.py -c blue -t "waiting ctrl"')
 
 # we deal with the command line arguments
 if len(sys.argv) > 1: # if we have at least one argument in the commande line
@@ -25,8 +26,6 @@ if len(sys.argv) > 1: # if we have at least one argument in the commande line
         devname = sys.argv[1]
 if len(sys.argv) > 2: # if there is a second argument, it is the device address
     devadd = sys.argv[2]
-
-os.system('echo "Before the while"')
 
 gamepad = None
 
@@ -45,6 +44,8 @@ while gamepad == None:
     if gamepad == None: # this means the controller was not found, the programm has to stop
         os.system('echo "controller not found - sleeping 5s"')
         sleep(5)
+
+os.system('/home/pi/bin/ihm.py -c green -t "ctrl connected"')
 
 os.system('echo "wireless controller found - starting the wireless_controller ros node"')
 os.system('echo "sending the source command to the tmux window"')

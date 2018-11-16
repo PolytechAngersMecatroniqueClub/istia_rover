@@ -63,7 +63,7 @@ z_old = 0
 # print(gamepad.capabilities(verbose=True)
 # to make the pad rumbled:
 
-rumble = ff.Rumble(strong_magnitude=0x0000, weak_magnitude=0xffff)
+'''rumble = ff.Rumble(strong_magnitude=0x0000, weak_magnitude=0xffff)
 effect_type = ff.EffectType(ff_rumble_effect=rumble)
 duration_ms=500
 
@@ -78,9 +78,11 @@ repeat_count = 2
 effect_id = gamepad.upload_effect(effect)
 gamepad.write(ecodes.EV_FF, effect_id, repeat_count)
 # time.sleep(2)
-# gamepad.erase_effect(effect_id)
+# gamepad.erase_effect(effect_id)'''
 
 flag_rosbag_started = False
+
+os.system('/home/pi/bin/ihm.py -c green -t "ctrl node OK"')
 
 for event in gamepad.read_loop():
     #filters by event type
@@ -93,12 +95,18 @@ for event in gamepad.read_loop():
                 # repeat_count = 1
                 # effect_id = gamepad.upload_effect(effect)
                 # gamepad.write(ecodes.EV_FF, effect_id, repeat_count)
-                current_time = time.strftime("%y-%m-%d_%H-%M-%S")
-                os.system('tmux send-keys -t \'rosbag\' \'rosbag record -O /media/pi/D090-C900/' + current_time + '.bag -a\' C-m')
-                rospy.loginfo("ROSBAG started")
-                flag_rosbag_started = True
+                if os.path.isdir("/media/pi/D090-C900"):
+                    current_time = time.strftime("%y-%m-%d_%H-%M-%S")
+                    os.system('tmux send-keys -t \'rosbag\' \'rosbag record -O /media/pi/D090-C900/' + current_time + '.bag -a\' C-m')
+                    rospy.loginfo("ROSBAG started")
+                    os.system('/home/pi/bin/ihm.py -c blue -t "recording"')
+                    flag_rosbag_started = True
+                else:
+                    os.system('/home/pi/bin/ihm.py -c red -t "usb not detected"')
+
         elif (event.code == 304) and (event.value == 1): # The cross key has been pressed
                 os.system('tmux send-keys -t \'rosbag\'  C-c')
+                os.system('/home/pi/bin/ihm.py -c red -t "not recording"')
                 rospy.loginfo('ROSBAG stopped')
                 flag_rosbag_started = False
     elif  event.type == ecodes.EV_ABS:

@@ -13,3 +13,7 @@ then
 fi
 
 mv * /home/pi/bin/
+
+# the init_scripts should not be done from the /home/pi/bin directory
+# this is done to avoid unwanted overwritting
+rm /home/pi/bin/init_scripts

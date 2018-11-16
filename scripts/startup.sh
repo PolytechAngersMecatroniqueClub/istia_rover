@@ -87,7 +87,9 @@ tmux send-keys -t 'roscore' 'source /home/pi/ros_catkin_ws/devel/setup.bash'  C-
 # start roscore in the terminal
 tmux send-keys -t 'roscore' 'roscore' C-m
 
-echo "sleeping 5s... waiting for roscore to be started ..." | tee -a $LOG_STARTUP
+/home/pi/bin/ihm.py -c blue -t "starting roscore" # display a message in the hmi
+
+echo "sleeping 15s... waiting for roscore to be started ..." | tee -a $LOG_STARTUP
 
 sleep 15 &
 PID=$!
@@ -100,6 +102,8 @@ do
 done
 
 echo "end of sleeping" | tee -a $LOG_STARTUP
+
+/home/pi/bin/ihm.py -c green -t "roscore started"
 
 # --- creation of the controller node tmux window ---
 # check the previous comments for explanation
