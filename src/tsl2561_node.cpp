@@ -97,6 +97,8 @@ int main(int argc, char **argv) {
         infrared.illuminance = ch1;
         // visible.illuminance = ch0 - ch1;
 
+        infrared.header.stamp = full_spectrum.header.stamp;
+
         pub_fullspectrum.publish(full_spectrum);
         pub_infrared.publish(infrared);
         // pub_visible.publish(visible);
