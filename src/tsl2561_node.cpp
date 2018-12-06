@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
 
     ros::Publisher pub_fullspectrum = node.advertise<sensor_msgs::Illuminance>("tsl2561/full_spectrum", 100);
     ros::Publisher pub_infrared = node.advertise<sensor_msgs::Illuminance>("tsl2561/infrared", 100);
-    ros::Publisher pub_visible = node.advertise<sensor_msgs::Illuminance>("tsl2561/visible", 100);
+    // ros::Publisher pub_visible = node.advertise<sensor_msgs::Illuminance>("tsl2561/visible", 100);
 
     sensor_msgs::Illuminance full_spectrum;
     //needed to defined the frame attached to the message
@@ -77,9 +77,9 @@ int main(int argc, char **argv) {
     //needed to defined the frame attached to the message
     infrared.header.frame_id = "tsl2561_link";
 
-    sensor_msgs::Illuminance visible;
+    // sensor_msgs::Illuminance visible;
     //needed to defined the frame attached to the message
-    visible.header.frame_id = "tsl2561_link";
+    // visible.header.frame_id = "tsl2561_link";
 
     int frequency = 5;
 
@@ -95,11 +95,11 @@ int main(int argc, char **argv) {
 
         full_spectrum.illuminance = ch0;
         infrared.illuminance = ch1;
-        visible.illuminance = ch0 - ch1;
+        // visible.illuminance = ch0 - ch1;
 
         pub_fullspectrum.publish(full_spectrum);
         pub_infrared.publish(infrared);
-        pub_visible.publish(visible);
+        // pub_visible.publish(visible);
 
         ros::spinOnce();
         loop_rate.sleep();
