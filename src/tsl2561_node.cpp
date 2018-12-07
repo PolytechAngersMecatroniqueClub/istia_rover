@@ -10,14 +10,30 @@ using namespace std;
 // ------------------------------
 // Sensor control registers and data
 
+// I2C address of the sensor
 const int I2C_ADDR = 0x39;
 
-const int CONTROL_REGISTER = 0x00 | 0x80;
+// timing register address
 const int TIMING_REGISTER = 0x01 | 0x80;
+// timing register possible values (integration time for the sensor)
+const int TIMING_VALUE_13MS  = 0x00;
+const int TIMING_VALUE_101MS = 0x01;
+const int TIMING_VALUE_401MS = 0x02;
+// gain definition
+const int LOW_GAIN_MODE  = 0x00;
+const int HIGH_GAIN_MODE = 0x10;
 
+// control register address
+const int CONTROL_REGISTER = 0x00 | 0x80;
+// control register possible values
+const int POWER_UP    = 0x03;
+const int POWER_sDOWN = 0x00;
+
+// data register addresses
+// channel 0
 const int CH0_LSB = 0x8C;
 const int CH0_MSB = 0x8D;
-
+// channel 1
 const int CH1_LSB = 0x8E;
 const int CH1_MSB = 0x8F;
 
@@ -52,8 +68,8 @@ int read16(int reg) {
 
 void init_sensor() {
     i2c_setup();
-    write(CONTROL_REGISTER, 0x03); // power ON mode 0x03
-    write(TIMING_REGISTER, 0x02); // Nominal integration time = 402ms (0x02)
+    write(CONTROL_REGISTER, POWER_UP); // power ON mode 0x03
+    write(TIMING_REGISTER, TIMING_VALUE_101MS | LOW_GAIN_MODE); // Nominal integration time = 402ms (0x02)
     usleep(5000);
 }
 
@@ -81,7 +97,8 @@ int main(int argc, char **argv) {
     //needed to defined the frame attached to the message
     // visible.header.frame_id = "tsl2561_link";
 
-    int frequency = 5;
+    // autonomously change the frequency : todo!
+    int frequency =9; // for 101ms integration time
 
     ros::Rate loop_rate(frequency);
 
@@ -97,7 +114,7 @@ int main(int argc, char **argv) {
         infrared.illuminance = ch1;
         // visible.illuminance = ch0 - ch1;
 
-	full_spectrum.header.stamp = ros::Time::now();
+        full_spectrum.header.stamp = ros::Time::now();
         infrared.header.stamp = full_spectrum.header.stamp;
 
         pub_fullspectrum.publish(full_spectrum);
