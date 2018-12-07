@@ -115,7 +115,7 @@ int main(int argc, char **argv) {
         // visible.illuminance = ch0 - ch1;
 
         full_spectrum.header.stamp = ros::Time::now();
-        infrared.header.stamp = full_spectrum.header.stamp;
+        infrared.header.stamp = ros::Time::now();
 
         pub_fullspectrum.publish(full_spectrum);
         pub_infrared.publish(infrared);
