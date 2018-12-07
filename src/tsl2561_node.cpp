@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
     // visible.header.frame_id = "tsl2561_link";
 
     // autonomously change the frequency : todo!
-    int frequency =9; // for 101ms integration time
+    int frequency =9; // for 101ms integration time : f=1/T
 
     ros::Rate loop_rate(frequency);
 
