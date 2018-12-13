@@ -118,4 +118,9 @@ kill current window:
 ```shell
 exit
 ```
-
+# ROS memo
+To install the contect of the workspace into the root of the ROS install (so you can remove the packages from your catkin_workspace, while use source code of standart library for instance)
+```shell
+ /opt/ros/kinetic/bin/catkin_make_isolated --install --install-space /opt/ros/kinetic
+ ```
+ This is the line while using ros kinetic installed in the /opt/ros/kinetic folder, this link sould be changed otherwise...
