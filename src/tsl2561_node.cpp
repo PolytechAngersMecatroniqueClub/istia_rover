@@ -27,7 +27,7 @@ const int HIGH_GAIN_MODE = 0x10;
 const int CONTROL_REGISTER = 0x00 | 0x80;
 // control register possible values
 const int POWER_UP    = 0x03;
-const int POWER_sDOWN = 0x00;
+const int POWER_DOWN = 0x00;
 
 // data register addresses
 // channel 0
@@ -69,7 +69,7 @@ int read16(int reg) {
 void init_sensor() {
     i2c_setup();
     write(CONTROL_REGISTER, POWER_UP); // power ON mode 0x03
-    write(TIMING_REGISTER, TIMING_VALUE_101MS | LOW_GAIN_MODE); // Nominal integration time = 402ms (0x02)
+    write(TIMING_REGISTER, TIMING_VALUE_101MS | LOW_GAIN_MODE); // Timing and gain definition
     usleep(5000);
 }
 

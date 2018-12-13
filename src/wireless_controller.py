@@ -6,6 +6,8 @@ from evdev import InputDevice, categorize, ecodes, ff, list_devices
 import sys as sys
 import os as os
 import time as time
+import subprocess as sp
+
 
 DEFAULT_DEVADD = "b8:27:eb:7a:9c:dc"
 DEFAULT_DEVNAME = "Wireless Controller"
@@ -96,10 +98,13 @@ for event in gamepad.read_loop():
                 # effect_id = gamepad.upload_effect(effect)
                 # gamepad.write(ecodes.EV_FF, effect_id, repeat_count)
                 if os.path.isdir("/media/pi/D090-C900"):
-                    current_time = time.strftime("%y-%m-%d_%H-%M-%S")
-                    os.system('tmux send-keys -t \'rosbag\' \'rosbag record -O /media/pi/D090-C900/' + current_time + '.bag -a\' C-m')
+                    proc = sp.Popen('ls /media/pi/D090-C900/ | wc -l', shell=True, stdout=sp.PIPE)
+                    answer = int(proc.stdout.read())
+                    num_file = answer + 1
+                    print(answer, num_file)
+                    os.system('tmux send-keys -t \'rosbag\' \'rosbag record -O /media/pi/D090-C900/' + str(num_file) + '.bag -a\' C-m')
                     rospy.loginfo("ROSBAG started")
-                    os.system('/home/pi/bin/ihm.py -c blue -t "recording"')
+                    os.system('/home/pi/bin/ihm.py -c white -t "recording"')
                     flag_rosbag_started = True
                 else:
                     os.system('/home/pi/bin/ihm.py -c red -t "usb not detected"')
@@ -109,6 +114,7 @@ for event in gamepad.read_loop():
                 os.system('/home/pi/bin/ihm.py -c red -t "not recording"')
                 rospy.loginfo('ROSBAG stopped')
                 flag_rosbag_started = False
+                time.sleep(2)
     elif  event.type == ecodes.EV_ABS:
         flagupdate = False
         if(event.code == 0):
