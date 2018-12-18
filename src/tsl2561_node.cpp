@@ -115,96 +115,92 @@ void init_sensor() {
     usleep(5000);
 }
 
+// code extracted from the adafruit class
+uint32_t calculateLux(uint16_t broadband, uint16_t ir){
+    unsigned long chScale;
+    unsigned long channel1;
+    unsigned long channel0;
 
-uint32_t calculateLux(uint16_t broadband, uint16_t ir)
-{
-  unsigned long chScale;
-  unsigned long channel1;
-  unsigned long channel0;
+    // Make sure the sensor isn't saturated!
+    uint16_t clipThreshold;
+    switch (integration_time){
+        case TIMING_VALUE_13MS:
+            clipThreshold = TSL2561_CLIPPING_13MS;
+            break;
+        case TIMING_VALUE_101MS:
+            clipThreshold = TSL2561_CLIPPING_101MS;
+            break;
+        default:
+            clipThreshold = TSL2561_CLIPPING_402MS;
+            break;
+    }
 
-  /* Make sure the sensor isn't saturated! */
-  uint16_t clipThreshold;
-  switch (integration_time)
-  {
-    case TIMING_VALUE_13MS:
-      clipThreshold = TSL2561_CLIPPING_13MS;
-      break;
-    case TIMING_VALUE_101MS:
-      clipThreshold = TSL2561_CLIPPING_101MS;
-      break;
-    default:
-      clipThreshold = TSL2561_CLIPPING_402MS;
-      break;
-  }
+    // Return 65536 lux if the sensor is saturated
+    if ((broadband > clipThreshold) || (ir > clipThreshold)){
+        return 65536;
+    }
 
-  /* Return 65536 lux if the sensor is saturated */
-  if ((broadband > clipThreshold) || (ir > clipThreshold))
-  {
-    return 65536;
-  }
+    // Get the correct scale depending on the intergration time
+    switch (integration_time){
+        case TIMING_VALUE_13MS:
+            chScale = TSL2561_LUX_CHSCALE_TINT0;
+            break;
+        case TIMING_VALUE_101MS:
+            chScale = TSL2561_LUX_CHSCALE_TINT1;
+            break;
+        default: // No scaling ... integration time = 402ms
+            chScale = (1 << TSL2561_LUX_CHSCALE);
+            break;
+    }
 
-  /* Get the correct scale depending on the intergration time */
-  switch (integration_time)
-  {
-    case TIMING_VALUE_13MS:
-      chScale = TSL2561_LUX_CHSCALE_TINT0;
-      break;
-    case TIMING_VALUE_101MS:
-      chScale = TSL2561_LUX_CHSCALE_TINT1;
-      break;
-    default: /* No scaling ... integration time = 402ms */
-      chScale = (1 << TSL2561_LUX_CHSCALE);
-      break;
-  }
+    // Scale for gain (1x or 16x)
+    if (! gain) chScale = chScale << 4;
 
-  /* Scale for gain (1x or 16x) */
-  if (! gain) chScale = chScale << 4;
+    // Scale the channel values
+    channel0 = (broadband * chScale) >> TSL2561_LUX_CHSCALE;
+    channel1 = (ir * chScale) >> TSL2561_LUX_CHSCALE;
 
-  /* Scale the channel values */
-  channel0 = (broadband * chScale) >> TSL2561_LUX_CHSCALE;
-  channel1 = (ir * chScale) >> TSL2561_LUX_CHSCALE;
+    // Find the ratio of the channel values (Channel1/Channel0)
+    unsigned long ratio1 = 0;
+    if (channel0 != 0) ratio1 = (channel1 << (TSL2561_LUX_RATIOSCALE+1)) / channel0;
 
-  /* Find the ratio of the channel values (Channel1/Channel0) */
-  unsigned long ratio1 = 0;
-  if (channel0 != 0) ratio1 = (channel1 << (TSL2561_LUX_RATIOSCALE+1)) / channel0;
+    // round the ratio value
+    unsigned long ratio = (ratio1 + 1) >> 1;
 
-  /* round the ratio value */
-  unsigned long ratio = (ratio1 + 1) >> 1;
+    unsigned int b, m;
 
-  unsigned int b, m;
+    if ((ratio >= 0) && (ratio <= TSL2561_LUX_K1T)){
+        b=TSL2561_LUX_B1T; m=TSL2561_LUX_M1T;
+    }else if (ratio <= TSL2561_LUX_K2T){
+        b=TSL2561_LUX_B2T; m=TSL2561_LUX_M2T;
+    }else if (ratio <= TSL2561_LUX_K3T){
+        b=TSL2561_LUX_B3T; m=TSL2561_LUX_M3T;
+    }else if (ratio <= TSL2561_LUX_K4T){
+        b=TSL2561_LUX_B4T; m=TSL2561_LUX_M4T;
+    }else if (ratio <= TSL2561_LUX_K5T){
+        b=TSL2561_LUX_B5T; m=TSL2561_LUX_M5T;
+    }else if (ratio <= TSL2561_LUX_K6T){
+        b=TSL2561_LUX_B6T; m=TSL2561_LUX_M6T;
+    }else if (ratio <= TSL2561_LUX_K7T){
+        b=TSL2561_LUX_B7T; m=TSL2561_LUX_M7T;
+    }else if (ratio > TSL2561_LUX_K8T){
+        b=TSL2561_LUX_B8T; m=TSL2561_LUX_M8T;
+    }
 
-  if ((ratio >= 0) && (ratio <= TSL2561_LUX_K1T))
-    {b=TSL2561_LUX_B1T; m=TSL2561_LUX_M1T;}
-  else if (ratio <= TSL2561_LUX_K2T)
-    {b=TSL2561_LUX_B2T; m=TSL2561_LUX_M2T;}
-  else if (ratio <= TSL2561_LUX_K3T)
-    {b=TSL2561_LUX_B3T; m=TSL2561_LUX_M3T;}
-  else if (ratio <= TSL2561_LUX_K4T)
-    {b=TSL2561_LUX_B4T; m=TSL2561_LUX_M4T;}
-  else if (ratio <= TSL2561_LUX_K5T)
-    {b=TSL2561_LUX_B5T; m=TSL2561_LUX_M5T;}
-  else if (ratio <= TSL2561_LUX_K6T)
-    {b=TSL2561_LUX_B6T; m=TSL2561_LUX_M6T;}
-  else if (ratio <= TSL2561_LUX_K7T)
-    {b=TSL2561_LUX_B7T; m=TSL2561_LUX_M7T;}
-  else if (ratio > TSL2561_LUX_K8T)
-    {b=TSL2561_LUX_B8T; m=TSL2561_LUX_M8T;}
+    unsigned long temp;
+    temp = ((channel0 * b) - (channel1 * m));
 
+    // Do not allow negative lux value
+    if (temp < 0) temp = 0;
 
-  unsigned long temp;
-  temp = ((channel0 * b) - (channel1 * m));
+    // Round lsb (2^(LUX_SCALE-1))
+    temp += (1 << (TSL2561_LUX_LUXSCALE-1));
 
-  /* Do not allow negative lux value */
-  if (temp < 0) temp = 0;
+    // Strip off fractional portion
+    uint32_t lux = temp >> TSL2561_LUX_LUXSCALE;
 
-  /* Round lsb (2^(LUX_SCALE-1)) */
-  temp += (1 << (TSL2561_LUX_LUXSCALE-1));
-
-  /* Strip off fractional portion */
-  uint32_t lux = temp >> TSL2561_LUX_LUXSCALE;
-
-  /* Signal I2C had no errors */
-  return lux;
+    // Signal I2C had no errors
+    return lux;
 }
 
 
