@@ -87,7 +87,7 @@ tmux send-keys -t 'roscore' 'source /home/pi/ros_catkin_ws/devel/setup.bash'  C-
 # start roscore in the terminal
 tmux send-keys -t 'roscore' 'roscore' C-m
 
-/home/pi/bin/ihm.py -c blue -t "starting roscore" # display a message in the hmi
+/home/pi/bin/ihm.py -c blue -t "starting roscore" | tee -a $LOG_STARTUP # display a message in the hmi
 
 echo "sleeping 15s... waiting for roscore to be started ..." | tee -a $LOG_STARTUP
 
