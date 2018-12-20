@@ -124,3 +124,45 @@ To install the contect of the workspace into the root of the ROS install (so you
  /opt/ros/kinetic/bin/catkin_make_isolated --install --install-space /opt/ros/kinetic
  ```
  This is the line while using ros kinetic installed in the /opt/ros/kinetic folder, this link sould be changed otherwise...
+
+# Connect the bluetooth dual shock controller to the rapsberry pi
+We use bluetoothcl software to connect the controller. For some reason, after recharging the controller it does not want to connect to the raspberry pi when pressing the 'P' button. This is what we do when it occurs:
+ - we start bluetoothcl using ssh connexion
+```shell
+bluetoothctl
+```
+ - we remove the device (A4:15:66:BE:C3:3E being the address of the device) 
+```shell
+remove A4:15:66:BE:C3:3E
+```
+ - we start the scanning process and we press the 'P' and 'share' buttons of the controller (at the same time)
+```shell
+[bluetooth]# scan on
+Discovery started
+[NEW] Device A4:15:66:BE:C3:3E Wireless Controller
+```
+- Then we pair the device by pressing the pressing the 'P' and 'share' buttons of the controller (at the same time) and running the command:
+```shell
+[bluetooth]# pair A4:15:66:BE:C3:3E 
+Attempting to pair with A4:15:66:BE:C3:3E
+[CHG] Device A4:15:66:BE:C3:3E Connected: yes
+[Wireless Controller]# 
+```
+- Then we connect the device
+```shell
+[Wireless Controller]# connect A4:15:66:BE:C3:3E 
+Attempting to connect to A4:15:66:BE:C3:3E
+Connection successful
+```
+- Finally we trust the device with 
+```shell
+[Wireless Controller]# trust A4:15:66:BE:C3:3E 
+[CHG] Device A4:15:66:BE:C3:3E Trusted: yes
+Changing A4:15:66:BE:C3:3E trust succeeded
+```
+- Now you can reboot the raspberry pi, and the controller should autonomaticaly connect when pressing the 'P' button
+
+
+
+
+
