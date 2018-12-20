@@ -81,7 +81,7 @@ const int CH1_MSB = 0x8F;
 
 int fd = 0;
 
-uint8_t integration_time = TIMING_VALUE_402MS;
+uint8_t integration_time = TIMING_VALUE_101MS;
 uint8_t gain = LOW_GAIN_MODE;
 
 void i2c_setup() {
