@@ -6,10 +6,7 @@ by the turtle telepo ros node (keyboard controls) -->
 <launch>
 
     <node name="motor_hat_twist_node" pkg="istia_rover" type="motor_hat_twist_node" output="screen">
-        <param name="motor_bot_left" value="0"/>
-        <param name="motor_bot_right" value="1"/>
-        <param name="motor_front_left" value="3"/>
-        <param name="motor_front_right" value="2"/>
+        <param name="motor_drive" value="0"/>
         <param name="max_speed" value="60"/>
         <param name="max_twist" value="2"/>
         <param name="topic_name" value="/turtle1/cmd_vel"/>
