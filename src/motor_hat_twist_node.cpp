@@ -49,6 +49,9 @@ const int in2Pin_drive = 9;
 
 const int pwmPin_steer = 15;
 
+int cst_min_steer = 400;
+int cst_max_steer = 500;
+
 // -------------------------
 // i2c and pwm setting utils
 
@@ -215,100 +218,32 @@ void setSpeed(int speed) {
 
 void setSteer(int steer) {
     ROS_INFO("Setting steer motor to %d", steer);
-    /*if (speed < -255 || speed > 255) {
-        ROS_ERROR("Invalid Speed [%d] Expected >=-255 <=255", speed);
-        return;
-    }
-
-    if (speed == 0) {
-        // RELEASE
-        turnOffDriveMotor();
-    }
-    else if (speed > 0) {
-        // FORWARD
-        setPin(fd_drive, in2Pin_drive, 0);
-        setPin(fd_drive, in1Pin_drive, 1);
-        setPWM(fd_drive, pwmPin_drive, 0, speed * 16);
-    }
-    else { // => speed < 0
-        // BACKWARD
-        setPin(fd_drive, in2Pin_drive, 0);
-        setPin(fd_drive, in1Pin_drive, 1);
-        setPWM(fd_drive, pwmPin_drive, 0, -speed * 16);
-    }*/
     setPWM(fd_steer, pwmPin_steer, 0, steer);
 }
 
 // Receive a twist message corresponding to the desired motor speeds.
 void cmdCallback(const geometry_msgs::Twist::ConstPtr& msg) {
     float x = msg->linear.x;    // linear speed
-    float z = msg->angular.z;   // angular speed (rotation)
-    int flagforward = 1;
-    int flagleft = 1;
-
-    // we get the absolute value of the command saving the direction forward/backward and left/right
-    if(x<0){
-        flagforward = -1;
-        x = -x;
-    }
-    if(z<0){
-        flagleft = -1;
-        z = -z;
-    }
+    float z = -msg->angular.z;   // angular speed (rotation)
 
     // we check if the twist value is lower than the max defined one
-    if(x > cst_max_twist){
+    if(x > cst_max_twist || x < -cst_max_twist){
         ROS_WARN("linear X twist value is highter than the max, max value is considered");
-        x = cst_max_twist;
+        x>cst_max_twist? x= cst_max_twist : x=-cst_max_twist;
     }
-    if(z > cst_max_twist){
+    if(z > cst_max_twist || z < -cst_max_twist){
         ROS_WARN("angular Z twist value is highter than the max, max value is considered");
-        z = cst_max_twist;
+        z>cst_max_twist? z= cst_max_twist : z=-cst_max_twist;
     }
 
     int valdrive=0, valsteer=0;
 
     valdrive = cst_max_speed * x / cst_max_twist;
-    valdrive *= flagforward;
-    /*if(x > z){
-        // linear command is considered
-        valleft = valrigth = int(cst_max_speed*x/(cst_max_twist));  // linear speed of all the motors
-        if( flagleft == 1 ){
-            valleft -= int(cst_max_speed*z/cst_max_twist); // angular speed for the left motors
-        }else{
-            valrigth -= int(cst_max_speed*z/cst_max_twist); // angular speed for the right motors
-        }
-        valleft *= flagforward;
-        valrigth *= flagforward;
-    }else{
-        // linear command is not considered, only rotation (angular)
-        // valleft = -int(cst_max_speed*(z-x)/(cst_max_twist))*flagleft;    // angular speed for the right motors
-	valleft = -int(cst_max_speed*(z)/(cst_max_twist))*flagleft;    // angular speed for the right motors
-        valrigth = -valleft;                                    // angular speed for the left motors
-    }*/
+
+    valsteer = cst_min_steer + (z+cst_max_twist)*(cst_max_steer - cst_min_steer)/(2.0*cst_max_twist);
 
     setSpeed(valdrive);
-    setPWM(fd_steer, 15, 0, 100);
-    getPWM(fd_steer, 15);
-    usleep(5000000);
-    setPWM(fd_steer, 15, 0, 200);
-    getPWM(fd_steer, 15);
-    usleep(5000000);
-    setPWM(fd_steer, 15, 0, 300);
-    getPWM(fd_steer, 15);
-    usleep(5000000);
-    setPWM(fd_steer, 15, 0, 400);
-    getPWM(fd_steer, 15);
-    usleep(5000000);
-    setPWM(fd_steer, 15, 0, 500);
-    getPWM(fd_steer, 15);
-    usleep(5000000);
-    setPWM(fd_steer, 15, 0, 0);
-    getPWM(fd_steer, 15);
-
-    
-
-    getPWM(fd_steer, 15);
+    setSteer(valsteer);
 }
 
 int main(int argc, char **argv) {
