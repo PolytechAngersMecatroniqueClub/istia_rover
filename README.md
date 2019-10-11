@@ -1,7 +1,10 @@
 # Istia Rover
 This repository contains the ROS package used on the rover and some usefull scripts an explanation
-- wifi : IstiaRover
-- mdp : istiawifi
+- wifi: IstiaRover
+- mdp: istiawifi
+- IP: 10.0.0.1
+- id: pi
+- mdp: raspberry 
 
 # The physical parts of the rover
 The istia rover is based on:
