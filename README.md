@@ -142,6 +142,9 @@ remove A4:15:66:BE:C3:3E
 ```
  - we start the scanning process and we press the 'P' and 'share' buttons of the controller (at the same time)
 ```shell
+scan on
+```
+```shell
 [bluetooth]# scan on
 Discovery started
 [NEW] Device A4:15:66:BE:C3:3E Wireless Controller
@@ -158,7 +161,7 @@ Attempting to pair with A4:15:66:BE:C3:3E
 ```
 - Then we connect the device
 ```shell
-A4:15:66:BE:C3:3E 
+connect A4:15:66:BE:C3:3E 
 ```
 ```shell
 [Wireless Controller]# connect A4:15:66:BE:C3:3E 
