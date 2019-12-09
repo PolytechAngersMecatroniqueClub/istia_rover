@@ -148,6 +148,9 @@ Discovery started
 ```
 - Then we pair the device by pressing the pressing the 'P' and 'share' buttons of the controller (at the same time) and running the command:
 ```shell
+pair A4:15:66:BE:C3:3E 
+```
+```shell
 [bluetooth]# pair A4:15:66:BE:C3:3E 
 Attempting to pair with A4:15:66:BE:C3:3E
 [CHG] Device A4:15:66:BE:C3:3E Connected: yes
@@ -155,11 +158,17 @@ Attempting to pair with A4:15:66:BE:C3:3E
 ```
 - Then we connect the device
 ```shell
+A4:15:66:BE:C3:3E 
+```
+```shell
 [Wireless Controller]# connect A4:15:66:BE:C3:3E 
 Attempting to connect to A4:15:66:BE:C3:3E
 Connection successful
 ```
 - Finally we trust the device with 
+```shell
+trust A4:15:66:BE:C3:3E 
+```
 ```shell
 [Wireless Controller]# trust A4:15:66:BE:C3:3E 
 [CHG] Device A4:15:66:BE:C3:3E Trusted: yes
